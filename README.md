@@ -1,5 +1,7 @@
 # Kimi CC
 
+**中文** | [English](README_EN.md) | [日本語](README_JA.md) | [한국어](README_KO.md) | [Français](README_FR.md) | [Deutsch](README_DE.md) | [Español](README_ES.md) | [Русский](README_RU.md)
+
 使用Kimi的最新模型（kimi-k2-0711-preview）驱动您的Claude Code。
 
 ## 快速安装

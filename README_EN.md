@@ -1,26 +1,42 @@
-# Kimi CC
+# Claude Code Multi-Provider Edition
 
 [中文](README.md) | **English** | [日本語](README_JA.md) | [한국어](README_KO.md) | [Français](README_FR.md) | [Deutsch](README_DE.md) | [Español](README_ES.md) | [Русский](README_RU.md)
 
-Use Kimi's latest model (kimi-k2-0711-preview) to power your Claude Code, providing a low-cost AI programming assistant solution.
+Use Alibaba Cloud Qwen, Kimi, or other AI models to power your Claude Code, providing a low-cost, high-performance AI programming assistant solution.
 
 ## ✨ Features
 
-- 🚀 **Cost-effective**: Use Kimi API instead of expensive Anthropic Claude API
+- 🚀 **Multi-provider support**: Support for Alibaba Cloud Qwen, Kimi, and other AI models
+- 💰 **Cost-effective**: Use domestic AI APIs instead of expensive Anthropic Claude API
 - 🔧 **One-click installation**: Automated installation scripts for Linux/macOS and Windows
 - 🔄 **Seamless integration**: Fully compatible with existing Claude Code workflows
-- 🤖 **Latest model**: Powered by Kimi's kimi-k2-0711-preview model
+- 🤖 **Latest models**:
+  - **Qwen (Recommended)**: Alibaba Cloud Qwen series (qwen-plus, qwen-max, etc.)
+  - **Kimi**: Moonshot AI kimi-k2-0711-preview model
 - 🛡️ **Secure and reliable**: Secure API key management and environment variable configuration
+- 🌐 **Flexible configuration**: Support for custom BASE_URL, easy switching between providers
 
 ## 📋 System Requirements
 
 - Node.js 18.0 or higher
 - npm package manager
-- Valid Moonshot API Key
+- Valid API Key (Alibaba Cloud Qwen or Moonshot Kimi)
 
 ## 🚀 Quick Installation
 
 ### 📝 Get API Key
+
+#### Option 1: Alibaba Cloud Qwen (Recommended)
+
+1. Go to Alibaba Cloud Bailian Platform to apply for an API Key
+
+   👉 [Alibaba Cloud Bailian Console](https://bailian.console.aliyun.com/)
+
+2. Register/login to your Alibaba Cloud account and activate Bailian service
+3. Navigate to: **API-KEY** → **Create My API-KEY**
+4. Copy the generated API Key (starts with `sk-`)
+
+#### Option 2: Kimi (Moonshot AI)
 
 1. Go to Kimi Open Platform to apply for an API Key
 
@@ -32,20 +48,26 @@ Use Kimi's latest model (kimi-k2-0711-preview) to power your Claude Code, provid
 
 ### 💻 Linux / macOS Installation
 
-Quick installation - you will be prompted to enter your API Key, then press Enter to complete:
+Quick installation with support for choosing API provider (Qwen3/Kimi/Custom), you will be prompted to enter the corresponding API Key:
 
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/heads/main/install.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/install.sh)"
 ```
+
+During installation, you can choose:
+- **Option 1**: Qwen3 (Alibaba Cloud Qwen) - Default and recommended
+- **Option 2**: Kimi (Moonshot AI)
+- **Option 3**: Custom BASE_URL
 
 ### 🪟 Windows Installation
 
 #### Method 1: Download Installation Script (Recommended)
 
-1. Download the installation script: [install_claude.bat](https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/heads/main/install_claude.bat)
+1. Download the installation script: [install_claude.bat](https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/install_claude.bat)
 2. Right-click and select "Run as administrator"
-3. Follow the prompts to enter your Moonshot API Key
-4. Wait for installation to complete
+3. Choose API provider (Qwen3/Kimi/Custom)
+4. Follow the prompts to enter the corresponding API Key
+5. Wait for installation to complete
 
 #### Method 2: Command Line Installation
 
@@ -53,7 +75,7 @@ In PowerShell:
 
 ```powershell
 # Download and execute installation script
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/heads/main/install_claude.bat" -OutFile "install_claude.bat"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/install_claude.bat" -OutFile "install_claude.bat"
 .\install_claude.bat
 ```
 
@@ -61,7 +83,7 @@ Or in Command Prompt:
 
 ```cmd
 # Use curl to download (Windows 10 1803+)
-curl -L -o install_claude.bat https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/heads/main/install_claude.bat
+curl -L -o install_claude.bat https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/install_claude.bat
 install_claude.bat
 ```
 

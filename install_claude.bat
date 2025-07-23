@@ -1,10 +1,10 @@
 @echo off
 :: =================================================================
-:: Kimi CC Windows Installation Script
+:: Claude Code Multi-Provider Windows Installation Script
 :: =================================================================
-:: Project: https://github.com/sxyseo/kimi-cc
-:: Description: Automatically install and configure Claude Code to use Kimi API
-:: Version: 1.3
+:: Project: https://github.com/sxyseo/qwen-cc
+:: Description: Automatically install and configure Claude Code with multiple API providers
+:: Version: 2.0
 :: Author: LLM Red Team
 :: =================================================================
 
@@ -13,12 +13,12 @@ setlocal enabledelayedexpansion
 
 :: Display welcome screen
 echo ================================================================
-echo                 Kimi CC Windows Installation Script
+echo         Claude Code Multi-Provider Windows Installation Script
 echo ================================================================
-echo This script will automatically install and configure Claude Code to use Kimi API
+echo This script will automatically install and configure Claude Code with your choice of API provider
 echo.
-echo Official docs: https://github.com/sxyseo/kimi-cc
-echo Kimi Platform: https://platform.moonshot.cn/
+echo Supported providers: Qwen3 (default), Kimi, Custom
+echo Official docs: https://github.com/sxyseo/qwen-cc
 echo ================================================================
 echo.
 
@@ -101,7 +101,7 @@ if !errorLevel! neq 0 (
     echo [INFO] Claude Code not installed, starting installation...
     echo Executing: npm install -g @anthropic-ai/claude-code
     echo.
-    
+
     :: Execute installation command
     npm install -g @anthropic-ai/claude-code
     if !errorLevel! neq 0 (
@@ -118,7 +118,7 @@ if !errorLevel! neq 0 (
     echo [SUCCESS] Claude Code installation completed
 ) else (
     echo [INFO] Claude Code already installed
-    
+
     :: Try to get version information
     for /f "delims=" %%i in ('claude --version 2^>nul') do set claude_version=%%i
     if defined claude_version (
@@ -152,14 +152,67 @@ if !errorLevel! neq 0 (
 )
 
 :: ================================================================
-:: Step 4: Get Moonshot API Key
+:: Step 4: Configure BASE_URL
 :: ================================================================
 echo.
-echo [Step 4/5] Configuring Moonshot API Key...
+echo [Step 4/6] Configuring API Provider...
 echo.
-echo Please enter your Moonshot API Key:
-echo Get from: https://platform.moonshot.cn/console/api-keys
-echo Instructions: User Center ^> API Key Management ^> Create New API Key
+echo Please choose your API provider:
+echo   1. Qwen3 (Alibaba DashScope) - Default and recommended
+echo   2. Kimi (Moonshot AI)
+echo   3. Custom BASE_URL
+echo.
+set /p "base_url_choice=Choose option (1, 2, or 3, default: 1): "
+
+:: Handle empty input (default to 1)
+if "!base_url_choice!"=="" set base_url_choice=1
+
+:: Set BASE_URL and provider info based on choice
+if "!base_url_choice!"=="2" (
+    set "base_url=https://api.moonshot.cn/anthropic/"
+    set "api_provider=Kimi"
+    set "api_key_url=https://platform.moonshot.cn/console/api-keys"
+    set "api_key_prefix=sk-"
+    echo [SUCCESS] Using Kimi BASE_URL: !base_url!
+) else if "!base_url_choice!"=="3" (
+    echo.
+    echo Please enter your custom BASE_URL:
+    set /p "base_url=BASE_URL: "
+    if "!base_url!"=="" (
+        echo [WARNING] BASE_URL cannot be empty. Using default Qwen3 BASE_URL.
+        set "base_url=https://dashscope.aliyuncs.com/api/v2/apps/claude-code-proxy"
+        set "api_provider=Qwen3"
+        set "api_key_url=https://dashscope.console.aliyun.com/apiKey"
+        set "api_key_prefix=sk-"
+    ) else (
+        set "api_provider=Custom"
+        set "api_key_url=Please refer to your API provider's documentation"
+        set "api_key_prefix="
+    )
+    echo [SUCCESS] Using custom BASE_URL: !base_url!
+) else (
+    set "base_url=https://dashscope.aliyuncs.com/api/v2/apps/claude-code-proxy"
+    set "api_provider=Qwen3"
+    set "api_key_url=https://dashscope.console.aliyun.com/apiKey"
+    set "api_key_prefix=sk-"
+    echo [SUCCESS] Using default Qwen3 BASE_URL: !base_url!
+)
+
+:: ================================================================
+:: Step 5: Get API Key
+:: ================================================================
+echo.
+echo [Step 5/6] Configuring !api_provider! API Key...
+echo.
+echo Please enter your !api_provider! API Key:
+echo Get from: !api_key_url!
+if "!api_provider!"=="Kimi" (
+    echo Instructions: User Center ^> API Key Management ^> Create New API Key
+) else if "!api_provider!"=="Qwen3" (
+    echo Instructions: Console ^> API Key Management ^> Create API Key
+) else (
+    echo Instructions: Please refer to your API provider's documentation
+)
 echo.
 echo [NOTE] For security, input will not be displayed, please paste directly and press Enter
 
@@ -174,26 +227,27 @@ if "!api_key!"=="EMPTY_KEY" (
     exit /b 1
 )
 
-:: Validate API Key format (basic check)
-if "!api_key:~0,3!" neq "sk-" (
-    echo.
-    echo [WARNING] API Key format may be incorrect, usually starts with 'sk-'
-    echo Continuing installation, but please confirm if API Key is correct...
-    echo.
-    pause
+:: Validate API Key format (basic check) - only for providers that use sk- prefix
+if not "!api_key_prefix!"=="" (
+    if "!api_key:~0,3!" neq "!api_key_prefix!" (
+        echo.
+        echo [WARNING] API Key format may be incorrect, usually starts with '!api_key_prefix!'
+        echo Continuing installation, but please confirm if API Key is correct...
+        echo.
+        pause
+    )
 )
 
 echo.
 echo [SUCCESS] API Key obtained
 
 :: ================================================================
-:: Step 5: Set Environment Variables
+:: Step 6: Set Environment Variables
 :: ================================================================
 echo.
-echo [Step 5/5] Setting system environment variables...
+echo [Step 6/6] Setting system environment variables...
 
-:: Environment variable values definition
-set "base_url=https://api.moonshot.cn/anthropic/"
+:: Environment variable values are already set in previous step (base_url variable)
 
 echo Setting environment variables...
 
@@ -349,7 +403,7 @@ echo.
 
 echo If you encounter "Invalid API key" error:
 echo    • Check if API Key is correct
-echo    • Visit: https://platform.moonshot.cn/console/api-keys
+echo    • Visit: !api_key_url!
 echo    • Re-run this script
 echo.
 
@@ -381,12 +435,18 @@ echo ================================================================
 echo.
 
 echo Related Links:
-echo    • Kimi Open Platform: https://platform.moonshot.cn/
-echo    • Project Homepage: https://github.com/sxyseo/kimi-cc
+if "!api_provider!"=="Kimi" (
+    echo    • Kimi Open Platform: https://platform.moonshot.cn/
+) else if "!api_provider!"=="Qwen3" (
+    echo    • Qwen3 DashScope Platform: https://dashscope.console.aliyun.com/
+) else (
+    echo    • API Provider: !api_key_url!
+)
+echo    • Project Homepage: https://github.com/sxyseo/qwen-cc
 echo    • Claude Code Documentation: https://docs.anthropic.com/claude/docs
 echo.
 
-echo Thank you for using Kimi CC!
+echo Thank you for using Claude Code Multi-Provider Installation!
 echo For issues, please visit the project homepage for support.
 echo.
-pause 
+pause

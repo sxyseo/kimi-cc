@@ -1,8 +1,8 @@
-# Kimi CC
+# Claude Code Edición Multi-Proveedor
 
 [中文](README.md) | [English](README_EN.md) | [日本語](README_JA.md) | [한국어](README_KO.md) | [Français](README_FR.md) | [Deutsch](README_DE.md) | **Español** | [Русский](README_RU.md)
 
-Utiliza el último modelo de Kimi (kimi-k2-0711-preview) para impulsar tu Claude Code, proporcionando una solución de asistente de programación IA de bajo costo.
+Utiliza Alibaba Cloud Qwen, Kimi u otros modelos de IA para impulsar tu Claude Code, proporcionando una solución de asistente de programación IA de bajo costo y alto rendimiento.
 
 ## ✨ Características
 

@@ -1,51 +1,73 @@
-# Kimi CC
+# Claude Code 多提供商版本
 
 **中文** | [English](README_EN.md) | [日本語](README_JA.md) | [한국어](README_KO.md) | [Français](README_FR.md) | [Deutsch](README_DE.md) | [Español](README_ES.md) | [Русский](README_RU.md)
 
-使用Kimi的最新模型（kimi-k2-0711-preview）驱动您的Claude Code，提供低成本的AI编程助手方案。
+使用阿里云通义千问（Qwen）或 Kimi 等多种 AI 模型驱动您的 Claude Code，提供低成本、高性能的 AI 编程助手方案。
 
 ## ✨ 特性
 
-- 🚀 **低成本方案**：使用Kimi API替代昂贵的Anthropic Claude API
-- 🔧 **一键安装**：支持Linux/macOS和Windows的自动化安装脚本
-- 🔄 **无缝集成**：完全兼容现有的Claude Code工作流程
-- 🤖 **最新模型**：基于Kimi的kimi-k2-0711-preview模型
-- 🛡️ **安全可靠**：安全的API Key管理和环境变量配置
+- 🚀 **多提供商支持**：支持阿里云通义千问（Qwen）、Kimi 等多种 AI 模型
+- 💰 **低成本方案**：使用国产 AI API 替代昂贵的 Anthropic Claude API
+- 🔧 **一键安装**：支持 Linux/macOS 和 Windows 的自动化安装脚本
+- 🔄 **无缝集成**：完全兼容现有的 Claude Code 工作流程
+- 🤖 **最新模型**：
+  - **Qwen（推荐）**：阿里云通义千问系列（qwen-plus、qwen-max 等）
+  - **Kimi**：月之暗面 kimi-k2-0711-preview 模型
+- 🛡️ **安全可靠**：安全的 API Key 管理和环境变量配置
+- 🌐 **灵活配置**：支持自定义 BASE_URL，轻松切换不同提供商
 
 ## 📋 系统要求
 
 - Node.js 18.0 或更高版本
 - npm 包管理器
-- 有效的Moonshot API Key
+- 有效的 API Key（阿里云通义千问 或 Moonshot Kimi）
 
 ## 🚀 快速安装
 
 ### 📝 获取 API Key
 
-1. 前往Kimi开放平台申请API Key
+#### 方案一：阿里云通义千问（推荐）
+
+1. 前往阿里云百炼平台申请 API Key
+
+   👉 [阿里云百炼控制台](https://bailian.console.aliyun.com/)
+
+2. 注册/登录阿里云账户，开通百炼服务
+3. 导航至：**API-KEY** → **创建我的API-KEY**
+4. 复制生成的 API Key（以 `sk-` 开头）
+
+#### 方案二：Kimi（月之暗面）
+
+1. 前往 Kimi 开放平台申请 API Key
 
    👉 [Kimi开放平台](https://platform.moonshot.cn/)
 
 2. 注册/登录账户，进入用户中心
 3. 导航至：**用户中心** → **API Key 管理** → **新建 API Key**
-4. 复制生成的API Key（以`sk-`开头）
+4. 复制生成的 API Key（以 `sk-` 开头）
 
 ### 💻 Linux / macOS 安装
 
-快速安装，会要求您输入 API Key，最终回车即可：
+快速安装，支持选择 API 提供商（Qwen3/Kimi/自定义），会要求您输入相应的 API Key：
 
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/heads/main/install.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/install.sh)"
 ```
+
+安装过程中您可以选择：
+- **选项 1**：Qwen3（阿里云通义千问）- 默认推荐
+- **选项 2**：Kimi（月之暗面）
+- **选项 3**：自定义 BASE_URL
 
 ### 🪟 Windows 安装
 
 #### 方法一：下载安装脚本（推荐）
 
-1. 下载安装脚本：[install_claude.bat](https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/heads/main/install_claude.bat)
+1. 下载安装脚本：[install_claude.bat](https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/install_claude.bat)
 2. 右键选择"以管理员身份运行"
-3. 按照提示输入您的Moonshot API Key
-4. 等待安装完成
+3. 选择 API 提供商（Qwen3/Kimi/自定义）
+4. 按照提示输入相应的 API Key
+5. 等待安装完成
 
 #### 方法二：命令行安装
 
@@ -53,7 +75,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/head
 
 ```powershell
 # 下载并执行安装脚本
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/heads/main/install_claude.bat" -OutFile "install_claude.bat"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/install_claude.bat" -OutFile "install_claude.bat"
 .\install_claude.bat
 ```
 
@@ -61,7 +83,7 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/he
 
 ```cmd
 # 使用curl下载（Windows 10 1803+）
-curl -L -o install_claude.bat https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/heads/main/install_claude.bat
+curl -L -o install_claude.bat https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/install_claude.bat
 install_claude.bat
 ```
 
@@ -80,28 +102,70 @@ claude           # 开始使用Claude Code
 
 ### Linux / macOS
 
+**阿里云通义千问（推荐）：**
+```bash
+export ANTHROPIC_BASE_URL=https://dashscope.aliyuncs.com/api/v2/apps/claude-code-proxy
+export ANTHROPIC_API_KEY=your_qwen_api_key_here
+```
+
+**Kimi：**
 ```bash
 export ANTHROPIC_BASE_URL=https://api.moonshot.cn/anthropic/
-export ANTHROPIC_API_KEY=your_moonshot_api_key_here
+export ANTHROPIC_API_KEY=your_kimi_api_key_here
 ```
 
 ### Windows
 
-**命令提示符 (CMD):**
+**阿里云通义千问（推荐）：**
+
+命令提示符 (CMD):
 ```cmd
-set ANTHROPIC_BASE_URL=https://api.moonshot.cn/anthropic/
-set ANTHROPIC_API_KEY=your_moonshot_api_key_here
+set ANTHROPIC_BASE_URL=https://dashscope.aliyuncs.com/api/v2/apps/claude-code-proxy
+set ANTHROPIC_API_KEY=your_qwen_api_key_here
 ```
 
-**PowerShell:**
+PowerShell:
+```powershell
+$env:ANTHROPIC_BASE_URL="https://dashscope.aliyuncs.com/api/v2/apps/claude-code-proxy"
+$env:ANTHROPIC_API_KEY="your_qwen_api_key_here"
+```
+
+**Kimi：**
+
+命令提示符 (CMD):
+```cmd
+set ANTHROPIC_BASE_URL=https://api.moonshot.cn/anthropic/
+set ANTHROPIC_API_KEY=your_kimi_api_key_here
+```
+
+PowerShell:
 ```powershell
 $env:ANTHROPIC_BASE_URL="https://api.moonshot.cn/anthropic/"
-$env:ANTHROPIC_API_KEY="your_moonshot_api_key_here"
+$env:ANTHROPIC_API_KEY="your_kimi_api_key_here"
 ```
 
 **永久设置（推荐）:**
 1. 右键"此电脑" → 属性 → 高级系统设置 → 环境变量
 2. 在用户变量中添加上述两个环境变量
+
+## 🧹 环境清理
+
+如果需要清理 Claude Code 环境变量和配置文件：
+
+### Linux / macOS
+```bash
+# 下载并运行清理脚本
+curl -fsSL https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/uninstall.sh | bash
+```
+
+### Windows
+1. 下载清理脚本：[uninstall_claude.bat](https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/uninstall_claude.bat)
+2. 右键选择"以管理员身份运行"
+
+清理脚本会安全地移除：
+- 环境变量：`ANTHROPIC_BASE_URL` 和 `ANTHROPIC_API_KEY`
+- 配置文件：`.claude.json`
+- 并创建备份文件以防意外
 
 ## 🎯 使用方法
 
@@ -168,10 +232,12 @@ echo $env:ANTHROPIC_API_KEY
 
 ## 🔗 相关链接
 
-- 🌐 [Kimi开放平台](https://platform.moonshot.cn/)
+- 🌐 [阿里云百炼平台](https://bailian.console.aliyun.com/)
+- 🌙 [Kimi开放平台](https://platform.moonshot.cn/)
 - 📖 [Claude Code官方文档](https://docs.anthropic.com/claude/docs)
-- 🐛 [问题反馈](https://github.com/sxyseo/kimi-cc/issues)
-- 💬 [讨论交流](https://github.com/sxyseo/kimi-cc/discussions)
+- 📚 [通义千问API文档](https://help.aliyun.com/zh/model-studio/use-qwen-by-calling-api)
+- 🐛 [问题反馈](https://github.com/sxyseo/qwen-cc/issues)
+- 💬 [讨论交流](https://github.com/sxyseo/qwen-cc/discussions)
 
 ## ⭐ 支持
 

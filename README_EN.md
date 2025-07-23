@@ -51,7 +51,7 @@ Use Alibaba Cloud Qwen, Kimi, or other AI models to power your Claude Code, prov
 Quick installation with support for choosing API provider (Qwen3/Kimi/Custom), you will be prompted to enter the corresponding API Key:
 
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/install.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/heads/main/install.sh)"
 ```
 
 During installation, you can choose:
@@ -63,7 +63,7 @@ During installation, you can choose:
 
 #### Method 1: Download Installation Script (Recommended)
 
-1. Download the installation script: [install_claude.bat](https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/install_claude.bat)
+1. Download the installation script: [install_claude.bat](https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/heads/main/install_claude.bat)
 2. Right-click and select "Run as administrator"
 3. Choose API provider (Qwen3/Kimi/Custom)
 4. Follow the prompts to enter the corresponding API Key
@@ -75,7 +75,7 @@ In PowerShell:
 
 ```powershell
 # Download and execute installation script
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/install_claude.bat" -OutFile "install_claude.bat"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/heads/main/install_claude.bat" -OutFile "install_claude.bat"
 .\install_claude.bat
 ```
 
@@ -83,7 +83,7 @@ Or in Command Prompt:
 
 ```cmd
 # Use curl to download (Windows 10 1803+)
-curl -L -o install_claude.bat https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/install_claude.bat
+curl -L -o install_claude.bat https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/heads/main/install_claude.bat
 install_claude.bat
 ```
 

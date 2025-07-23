@@ -4,20 +4,20 @@ set -e
 
 install_nodejs() {
     local platform=$(uname -s)
-    
+
     case "$platform" in
         Linux|Darwin)
             echo "🚀 Installing Node.js on Unix/Linux/macOS..."
-            
+
             echo "📥 Downloading and installing nvm..."
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-            
+
             echo "🔄 Loading nvm environment..."
             \. "$HOME/.nvm/nvm.sh"
-            
+
             echo "📦 Downloading and installing Node.js v22..."
             nvm install 22
-            
+
             echo -n "✅ Node.js installation completed! Version: "
             node -v # Should print "v22.17.0".
             echo -n "✅ Current nvm version: "
@@ -36,7 +36,7 @@ install_nodejs() {
 if command -v node >/dev/null 2>&1; then
     current_version=$(node -v | sed 's/v//')
     major_version=$(echo $current_version | cut -d. -f1)
-    
+
     if [ "$major_version" -ge 18 ]; then
         echo "Node.js is already installed: v$current_version"
     else
@@ -59,7 +59,7 @@ fi
 # Configure Claude Code to skip onboarding
 echo "Configuring Claude Code to skip onboarding..."
 node --eval '
-    const homeDir = os.homedir(); 
+    const homeDir = os.homedir();
     const filePath = path.join(homeDir, ".claude.json");
     if (fs.existsSync(filePath)) {
         const content = JSON.parse(fs.readFileSync(filePath, "utf-8"));
@@ -68,9 +68,50 @@ node --eval '
         fs.writeFileSync(filePath,JSON.stringify({ hasCompletedOnboarding: true }), "utf-8");
     }'
 
-# Prompt user for API key
-echo "🔑 Please enter your Moonshot API key:"
-echo "   You can get your API key from: https://platform.moonshot.cn/console/api-keys"
+# Prompt user for BASE_URL configuration
+echo "🌐 Configure BASE_URL:"
+echo "   1. Use default Qwen3 BASE_URL (recommended)"
+echo "   2. Use Kimi BASE_URL"
+echo "   3. Enter custom BASE_URL"
+echo ""
+read -p "Choose option (1, 2, or 3, default: 1): " base_url_choice
+echo ""
+
+case "$base_url_choice" in
+    2)
+        base_url="https://api.moonshot.cn/anthropic/"
+        echo "✅ Using Kimi BASE_URL: $base_url"
+        ;;
+    3)
+        echo "🔗 Please enter your custom BASE_URL:"
+        read base_url
+        if [ -z "$base_url" ]; then
+            echo "⚠️  BASE_URL cannot be empty. Using default Qwen3 BASE_URL."
+            base_url="https://dashscope.aliyuncs.com/api/v2/apps/claude-code-proxy"
+        fi
+        echo "✅ Using custom BASE_URL: $base_url"
+        ;;
+    *)
+        base_url="https://dashscope.aliyuncs.com/api/v2/apps/claude-code-proxy"
+        echo "✅ Using default Qwen3 BASE_URL: $base_url"
+        ;;
+esac
+
+# Prompt user for API key based on selected BASE_URL
+echo ""
+if [[ "$base_url" == *"moonshot"* ]]; then
+    echo "🔑 Please enter your Kimi API key:"
+    echo "   You can get your API key from: https://platform.moonshot.cn/console/api-keys"
+    api_provider="Kimi"
+elif [[ "$base_url" == *"dashscope"* ]]; then
+    echo "🔑 Please enter your Qwen3 API key:"
+    echo "   You can get your API key from: https://dashscope.console.aliyun.com/apiKey"
+    api_provider="Qwen3"
+else
+    echo "🔑 Please enter your API key:"
+    echo "   Please refer to your API provider's documentation for obtaining the API key"
+    api_provider="Custom"
+fi
 echo "   Note: The input is hidden for security. Please paste your API key directly."
 echo ""
 read -s api_key
@@ -108,8 +149,8 @@ if [ -f "$rc_file" ] && grep -q "ANTHROPIC_BASE_URL\|ANTHROPIC_API_KEY" "$rc_fil
 else
     # Append new entries
     echo "" >> "$rc_file"
-    echo "# Claude Code environment variables" >> "$rc_file"
-    echo "export ANTHROPIC_BASE_URL=https://api.moonshot.cn/anthropic/" >> "$rc_file"
+    echo "# Claude Code environment variables for $api_provider" >> "$rc_file"
+    echo "export ANTHROPIC_BASE_URL=$base_url" >> "$rc_file"
     echo "export ANTHROPIC_API_KEY=$api_key" >> "$rc_file"
     echo "✅ Environment variables added to $rc_file"
 fi

@@ -1,22 +1,26 @@
-# Kimi CC
+# Claude Code 멀티 프로바이더 에디션
 
 [中文](README.md) | [English](README_EN.md) | [日本語](README_JA.md) | **한국어** | [Français](README_FR.md) | [Deutsch](README_DE.md) | [Español](README_ES.md) | [Русский](README_RU.md)
 
-Kimi의 최신 모델(kimi-k2-0711-preview)을 사용하여 Claude Code를 구동하고, 저비용 AI 프로그래밍 어시스턴트 솔루션을 제공합니다.
+Alibaba Cloud Qwen, Kimi 또는 기타 AI 모델을 사용하여 Claude Code를 구동하고, 저비용 고성능 AI 프로그래밍 어시스턴트 솔루션을 제공합니다.
 
 ## ✨ 특징
 
-- 🚀 **비용 효율적**: 비싼 Anthropic Claude API 대신 Kimi API 사용
+- 🚀 **멀티 프로바이더 지원**: Alibaba Cloud Qwen, Kimi 및 기타 AI 모델 지원
+- 💰 **비용 효율적**: 비싼 Anthropic Claude API 대신 국산 AI API 사용
 - 🔧 **원클릭 설치**: Linux/macOS 및 Windows용 자동 설치 스크립트
 - 🔄 **완벽한 통합**: 기존 Claude Code 워크플로우와 완전히 호환
-- 🤖 **최신 모델**: Kimi의 kimi-k2-0711-preview 모델로 구동
+- 🤖 **최신 모델**:
+  - **Qwen (권장)**: Alibaba Cloud Qwen 시리즈 (qwen-plus, qwen-max 등)
+  - **Kimi**: Moonshot AI kimi-k2-0711-preview 모델
 - 🛡️ **안전하고 신뢰할 수 있음**: 안전한 API 키 관리 및 환경 변수 구성
+- 🌐 **유연한 구성**: 사용자 정의 BASE_URL 지원, 프로바이더 간 쉬운 전환
 
 ## 📋 시스템 요구사항
 
 - Node.js 18.0 이상
 - npm 패키지 매니저
-- 유효한 Moonshot API Key
+- 유효한 API Key (Alibaba Cloud Qwen 또는 Moonshot Kimi)
 
 ## 🚀 빠른 설치
 

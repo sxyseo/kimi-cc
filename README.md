@@ -51,7 +51,7 @@
 快速安装，支持选择 API 提供商（Qwen3/Kimi/自定义），会要求您输入相应的 API Key：
 
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/install.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/heads/main/install.sh)"
 ```
 
 安装过程中您可以选择：
@@ -63,7 +63,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/head
 
 #### 方法一：下载安装脚本（推荐）
 
-1. 下载安装脚本：[install_claude.bat](https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/install_claude.bat)
+1. 下载安装脚本：[install_claude.bat](https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/heads/main/install_claude.bat)
 2. 右键选择"以管理员身份运行"
 3. 选择 API 提供商（Qwen3/Kimi/自定义）
 4. 按照提示输入相应的 API Key
@@ -75,7 +75,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/head
 
 ```powershell
 # 下载并执行安装脚本
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/install_claude.bat" -OutFile "install_claude.bat"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/heads/main/install_claude.bat" -OutFile "install_claude.bat"
 .\install_claude.bat
 ```
 
@@ -83,7 +83,7 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/he
 
 ```cmd
 # 使用curl下载（Windows 10 1803+）
-curl -L -o install_claude.bat https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/install_claude.bat
+curl -L -o install_claude.bat https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/heads/main/install_claude.bat
 install_claude.bat
 ```
 
@@ -155,11 +155,11 @@ $env:ANTHROPIC_API_KEY="your_kimi_api_key_here"
 ### Linux / macOS
 ```bash
 # 下载并运行清理脚本
-curl -fsSL https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/uninstall.sh | bash
+curl -fsSL https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/heads/main/uninstall.sh | bash
 ```
 
 ### Windows
-1. 下载清理脚本：[uninstall_claude.bat](https://raw.githubusercontent.com/sxyseo/qwen-cc/refs/heads/main/uninstall_claude.bat)
+1. 下载清理脚本：[uninstall_claude.bat](https://raw.githubusercontent.com/sxyseo/kimi-cc/refs/heads/main/uninstall_claude.bat)
 2. 右键选择"以管理员身份运行"
 
 清理脚本会安全地移除：
@@ -236,8 +236,8 @@ echo $env:ANTHROPIC_API_KEY
 - 🌙 [Kimi开放平台](https://platform.moonshot.cn/)
 - 📖 [Claude Code官方文档](https://docs.anthropic.com/claude/docs)
 - 📚 [通义千问API文档](https://help.aliyun.com/zh/model-studio/use-qwen-by-calling-api)
-- 🐛 [问题反馈](https://github.com/sxyseo/qwen-cc/issues)
-- 💬 [讨论交流](https://github.com/sxyseo/qwen-cc/discussions)
+- 🐛 [问题反馈](https://github.com/sxyseo/kimi-cc/issues)
+- 💬 [讨论交流](https://github.com/sxyseo/kimi-cc/discussions)
 
 ## ⭐ 支持
 

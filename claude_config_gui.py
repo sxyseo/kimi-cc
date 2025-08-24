@@ -7,6 +7,7 @@ Claude Code 配置管理器 GUI
 
 import sys
 import os
+import platform
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -145,6 +146,7 @@ class ClaudeConfigGUI(QMainWindow):
         super().__init__()
         self.config_manager = ConfigManager()
         self.status_thread = None
+        self.platform = platform.system().lower()
         self.setup_ui()
         self.setup_status_bar()
         self.setup_toolbar()
@@ -290,6 +292,21 @@ class ClaudeConfigGUI(QMainWindow):
         log_layout.addWidget(self.log_text)
         
         layout.addWidget(log_group)
+        
+        # 环境变量清理组
+        cleanup_group = QGroupBox("环境变量清理")
+        cleanup_layout = QVBoxLayout(cleanup_group)
+        
+        cleanup_info = QLabel("清除ANTHROPIC_BASE_URL和ANTHROPIC_AUTH_TOKEN环境变量")
+        cleanup_info.setWordWrap(True)
+        cleanup_layout.addWidget(cleanup_info)
+        
+        self.cleanup_btn = QPushButton("清除环境变量")
+        self.cleanup_btn.setStyleSheet("background-color: #f44336; color: white; font-weight: bold;")
+        self.cleanup_btn.clicked.connect(self.cleanup_environment)
+        cleanup_layout.addWidget(self.cleanup_btn)
+        
+        layout.addWidget(cleanup_group)
         
         # 添加弹性空间
         layout.addStretch()
@@ -740,6 +757,248 @@ class ClaudeConfigGUI(QMainWindow):
         except Exception as e:
             QMessageBox.critical(self, "导出失败", f"导出配置时发生错误:\n{str(e)}")
             self.log_message(f"✗ 导出失败: {str(e)}")
+    
+    def cleanup_environment(self):
+        """清除环境变量"""
+        from PySide6.QtWidgets import QMessageBox
+        import subprocess
+        import os
+        from datetime import datetime
+        
+        # 确认对话框
+        reply = QMessageBox.question(
+            self, "确认清除环境变量", 
+            "确定要清除以下环境变量吗？\n\n"
+            "• ANTHROPIC_BASE_URL\n"
+            "• ANTHROPIC_AUTH_TOKEN\n\n"
+            "此操作将:\n"
+            "• 从系统环境中删除这些变量\n"
+            "• 从shell配置文件中删除相关设置\n"
+            "• 删除Claude Code配置文件\n\n"
+            "注意: 此操作不可撤销，建议先备份重要配置！",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+        
+        if reply != QMessageBox.Yes:
+            self.log_message("✗ 用户取消了环境变量清除操作")
+            return
+        
+        self.log_message("🧹 开始清除环境变量...")
+        
+        try:
+            changes_made = False
+            
+            # 根据平台执行不同的清理逻辑
+            if self.platform == 'windows':
+                changes_made = self.cleanup_windows()
+            else:
+                changes_made = self.cleanup_unix()
+            
+            # 清除当前会话的环境变量
+            if 'ANTHROPIC_BASE_URL' in os.environ:
+                del os.environ['ANTHROPIC_BASE_URL']
+            if 'ANTHROPIC_AUTH_TOKEN' in os.environ:
+                del os.environ['ANTHROPIC_AUTH_TOKEN']
+            
+            # 删除Claude Code配置文件
+            claude_config_path = os.path.expanduser('~/.claude.json')
+            if os.path.exists(claude_config_path):
+                # 创建备份
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                backup_path = f"{claude_config_path}.backup.{timestamp}"
+                
+                try:
+                    import shutil
+                    shutil.copy2(claude_config_path, backup_path)
+                    os.remove(claude_config_path)
+                    self.log_message(f"✅ Claude Code配置文件已备份并删除: {backup_path}")
+                    changes_made = True
+                except Exception as e:
+                    self.log_message(f"⚠️  删除Claude Code配置文件失败: {e}")
+            else:
+                self.log_message("ℹ️  Claude Code配置文件未找到")
+            
+            # 删除配置管理器的配置目录
+            config_dir = os.path.expanduser('~/.claude_code_config')
+            if os.path.exists(config_dir):
+                try:
+                    import shutil
+                    backup_dir = f"{config_dir}.backup.{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                    shutil.copytree(config_dir, backup_dir)
+                    shutil.rmtree(config_dir)
+                    self.log_message(f"✅ 配置管理器目录已备份并删除: {backup_dir}")
+                    changes_made = True
+                except Exception as e:
+                    self.log_message(f"⚠️  删除配置管理器目录失败: {e}")
+            else:
+                self.log_message("ℹ️  配置管理器目录未找到")
+            
+            # 刷新界面状态
+            self.refresh_data()
+            
+            # 显示结果
+            if changes_made:
+                QMessageBox.information(
+                    self, "清理完成", 
+                    "环境变量清理完成！\n\n"
+                    "已执行的操作:\n"
+                    "• 清除系统环境变量\n"
+                    "• 删除配置文件\n"
+                    "• 备份重要数据\n\n"
+                    "注意: 需要重启终端使更改完全生效"
+                )
+                self.log_message("✅ 环境变量清理完成")
+            else:
+                QMessageBox.information(
+                    self, "无需清理", 
+                    "未找到需要清理的环境变量或配置文件。\n系统已经是干净状态。"
+                )
+                self.log_message("ℹ️  系统已经是干净状态，无需清理")
+                
+        except Exception as e:
+            QMessageBox.critical(self, "清理失败", f"清理环境变量时发生错误:\n{str(e)}")
+            self.log_message(f"✗ 清理环境变量失败: {e}")
+    
+    def cleanup_windows(self):
+        """Windows平台环境变量清理"""
+        import subprocess
+        
+        changes_made = False
+        
+        try:
+            # 清除用户环境变量
+            for var in ['ANTHROPIC_BASE_URL', 'ANTHROPIC_AUTH_TOKEN']:
+                # 检查变量是否存在
+                result = subprocess.run(
+                    ['reg', 'query', 'HKEY_CURRENT_USER\\Environment', '/v', var],
+                    capture_output=True, text=True
+                )
+                
+                if result.returncode == 0:
+                    # 删除环境变量
+                    result = subprocess.run(
+                        ['reg', 'delete', 'HKEY_CURRENT_USER\\Environment', '/v', var, '/f'],
+                        capture_output=True, text=True
+                    )
+                    
+                    if result.returncode == 0:
+                        self.log_message(f"✅ 已删除用户环境变量: {var}")
+                        changes_made = True
+                    else:
+                        self.log_message(f"⚠️  删除用户环境变量失败: {var}")
+                else:
+                    self.log_message(f"ℹ️  用户环境变量不存在: {var}")
+            
+            # 尝试清除系统环境变量（需要管理员权限）
+            for var in ['ANTHROPIC_BASE_URL', 'ANTHROPIC_AUTH_TOKEN']:
+                result = subprocess.run(
+                    ['reg', 'query', 'HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment', '/v', var],
+                    capture_output=True, text=True
+                )
+                
+                if result.returncode == 0:
+                    result = subprocess.run(
+                        ['reg', 'delete', 'HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment', '/v', var, '/f'],
+                        capture_output=True, text=True
+                    )
+                    
+                    if result.returncode == 0:
+                        self.log_message(f"✅ 已删除系统环境变量: {var}")
+                        changes_made = True
+                    else:
+                        self.log_message(f"⚠️  删除系统环境变量失败: {var} (可能需要管理员权限)")
+            
+            return changes_made
+            
+        except Exception as e:
+            self.log_message(f"✗ Windows环境变量清理失败: {e}")
+            return False
+    
+    def cleanup_unix(self):
+        """Unix平台环境变量清理"""
+        import os
+        import subprocess
+        from pathlib import Path
+        
+        changes_made = False
+        
+        try:
+            # 检测当前shell
+            current_shell = os.path.basename(os.environ.get('SHELL', '/bin/bash'))
+            
+            # 根据shell类型确定配置文件
+            rc_files = []
+            if current_shell == 'bash':
+                rc_files = ['~/.bashrc', '~/.bash_profile', '~/.profile']
+            elif current_shell == 'zsh':
+                rc_files = ['~/.zshrc', '~/.zprofile', '~/.profile']
+            elif current_shell == 'fish':
+                rc_files = ['~/.config/fish/config.fish']
+            else:
+                rc_files = ['~/.profile', '~/.bashrc', '~/.bash_profile']
+            
+            # 处理每个配置文件
+            for rc_file in rc_files:
+                rc_path = Path(os.path.expanduser(rc_file))
+                if rc_path.exists():
+                    if self.cleanup_shell_config(rc_path):
+                        changes_made = True
+            
+            return changes_made
+            
+        except Exception as e:
+            self.log_message(f"✗ Unix环境变量清理失败: {e}")
+            return False
+    
+    def cleanup_shell_config(self, config_file):
+        """清理shell配置文件中的环境变量"""
+        from datetime import datetime
+        
+        try:
+            # 读取文件内容
+            with open(config_file, 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+            
+            # 检查是否包含Claude Code相关的环境变量
+            has_claude_vars = any(
+                'ANTHROPIC_BASE_URL' in line or 
+                'ANTHROPIC_AUTH_TOKEN' in line or 
+                'Claude Code environment variables' in line
+                for line in lines
+            )
+            
+            if not has_claude_vars:
+                self.log_message(f"ℹ️  配置文件中无Claude Code变量: {config_file}")
+                return False
+            
+            # 创建备份
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            backup_path = f"{config_file}.backup.{timestamp}"
+            
+            import shutil
+            shutil.copy2(config_file, backup_path)
+            self.log_message(f"✅ 配置文件已备份: {backup_path}")
+            
+            # 过滤掉Claude Code相关的行
+            filtered_lines = []
+            for line in lines:
+                if ('ANTHROPIC_BASE_URL' in line or 
+                    'ANTHROPIC_AUTH_TOKEN' in line or 
+                    'Claude Code environment variables' in line):
+                    continue
+                filtered_lines.append(line)
+            
+            # 写回文件
+            with open(config_file, 'w', encoding='utf-8') as f:
+                f.writelines(filtered_lines)
+            
+            self.log_message(f"✅ 已清理配置文件: {config_file}")
+            return True
+            
+        except Exception as e:
+            self.log_message(f"✗ 清理配置文件失败 {config_file}: {e}")
+            return False
     
     def show_about(self):
         """显示关于对话框"""

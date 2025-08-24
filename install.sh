@@ -132,15 +132,15 @@ esac
 
 # Prompt user for API key based on selected BASE_URL
 echo ""
-if [[ "$base_url" == *"moonshot"* ]]; then
+if echo "$base_url" | grep -q "moonshot"; then
     echo "🔑 Please enter your Kimi API key:"
     echo "   You can get your API key from: https://platform.moonshot.cn/console/api-keys"
     api_provider="Kimi"
-elif [[ "$base_url" == *"bigmodel"* ]]; then
+elif echo "$base_url" | grep -q "bigmodel"; then
     echo "🔑 Please enter your Zhipu AI API key:"
     echo "   You can get your API key from: https://open.bigmodel.cn/console/apikeys"
     api_provider="Zhipu AI"
-elif [[ "$base_url" == *"dashscope"* ]]; then
+elif echo "$base_url" | grep -q "dashscope"; then
     echo "🔑 Please enter your Qwen3 API key:"
     echo "   You can get your API key from: https://dashscope.console.aliyun.com/apiKey"
     api_provider="Qwen3"
@@ -151,7 +151,9 @@ else
 fi
 echo "   Note: The input is hidden for security. Please paste your API key directly."
 echo ""
-read -s api_key
+stty -echo
+read api_key
+stty echo
 echo ""
 
 if [ -z "$api_key" ]; then

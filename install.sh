@@ -263,11 +263,11 @@ if [ -n "$python_cmd" ] && [ -f "config_manager.py" ]; then
 fi
 echo ""
 echo "📚 相关链接:"
-if [[ "$api_provider" == "Kimi" ]]; then
+if [ "$api_provider" = "Kimi" ]; then
     echo "   • Kimi 开放平台: https://platform.moonshot.cn/"
-elif [[ "$api_provider" == "Zhipu AI" ]]; then
+elif [ "$api_provider" = "Zhipu AI" ]; then
     echo "   • 智谱AI 开放平台: https://open.bigmodel.cn/"
-elif [[ "$api_provider" == "Qwen3" ]]; then
+elif [ "$api_provider" = "Qwen3" ]; then
     echo "   • 阿里云百炼平台: https://bailian.console.aliyun.com/"
 fi
 echo "   • 项目主页: https://github.com/sxyseo/kimi-cc"

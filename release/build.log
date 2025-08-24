@@ -1,0 +1,29 @@
+构建信息
+========================================
+构建时间: 2025-08-02 23:41:51
+构建平台: Darwin arm64
+Python版本: Python 3.10.12
+PyInstaller版本: 6.4.0
+
+构建的文件:
+  - Claude-Config-Manager
+  - README.md
+  - claude-config
+  - claude-switch
+  - example_config.json
+  - requirements.txt
+  - start_gui.sh
+
+使用方法:
+  GUI界面: 
+    Windows: 双击 Claude-Config-Manager.exe 或 start_gui.bat
+    Unix/Linux/macOS: 运行 ./Claude-Config-Manager 或 ./start_gui.sh
+  
+  命令行:
+    配置管理: ./claude-config --help
+    快速切换: ./claude-switch --help
+
+注意事项:
+  - 首次运行可能需要较长时间初始化
+  - 如遇到权限问题，请确保文件有执行权限
+  - 配置文件保存在用户目录的 .claude_code_config 文件夹中

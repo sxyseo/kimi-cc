@@ -1,14 +1,14 @@
 ﻿@echo off
-chcp 65001 >nul
+chcp 65001 >nul 2>&1
 setlocal enabledelayedexpansion
 
-:: Claude Code 配置管理器 GUI 启动脚本
-:: 自动检查依赖并启动图形界面
+:: Claude Code Config Manager GUI Launcher
+:: Auto check dependencies and start GUI
 
-echo Claude Code 配置管理器
-echo ========================
+echo Claude Code Configuration Manager
+echo ====================================
 
-:: 检查Python
+:: Check Python
 where python >nul 2>&1
 if %errorlevel% equ 0 (
     set "python_cmd=python"
@@ -21,45 +21,45 @@ if %errorlevel% equ 0 (
     goto :check_gui
 )
 
-echo 错误: 未找到Python
-echo 请先安装Python: https://python.org
+echo Error: Python not found
+echo Please install Python: https://python.org
 pause
 exit /b 1
 
 :check_gui
-echo 正在检查GUI依赖...
+echo Checking GUI dependencies...
 
-:: 检查PySide6
+:: Check PySide6
 %python_cmd% -c "import PySide6" >nul 2>&1
 if %errorlevel% neq 0 (
-    echo 未找到PySide6依赖
-    set /p "install_choice=是否自动安装GUI依赖? (y/n): "
+    echo PySide6 dependency not found
+    set /p "install_choice=Auto install GUI dependencies? (y/n): "
     
     if /i "!install_choice!"=="y" (
-        echo 正在安装PySide6...
+        echo Installing PySide6...
         %python_cmd% -m pip install PySide6
         if %errorlevel% neq 0 (
-            echo 安装失败，请手动运行: pip install PySide6
+            echo Installation failed, please run manually: pip install PySide6
             pause
             exit /b 1
         )
-        echo 依赖安装成功！
+        echo Dependencies installed successfully!
     ) else (
-        echo 请手动安装依赖: pip install PySide6
+        echo Please install dependencies manually: pip install PySide6
         pause
         exit /b 1
     )
 )
 
-:: 启动GUI
-echo 正在启动配置管理器...
+:: Start GUI
+echo Starting configuration manager...
 if exist "claude_config_gui.py" (
     %python_cmd% claude_config_gui.py
 ) else if exist "start_gui.py" (
     %python_cmd% start_gui.py
 ) else (
-    echo 错误: 未找到GUI文件
-    echo 请确保 claude_config_gui.py 或 start_gui.py 在当前目录
+    echo Error: GUI file not found
+    echo Please ensure claude_config_gui.py or start_gui.py is in current directory
     pause
     exit /b 1
 )
